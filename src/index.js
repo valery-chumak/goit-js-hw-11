@@ -9,7 +9,7 @@ const refs = {
   gallery: document.querySelector('.gallery'),
   loadBtn: document.querySelector('.load-btn')
 }
-const BASE_URL = "https://pixabay.com/api";
+const BASE_URL = "http://pixabay.com/api";
 const API_KEY = "29247796-24b66d41fb94834f451b18c5a";
 let currentPage = 1;
 let query = '';
