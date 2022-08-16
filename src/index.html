@@ -3,12 +3,37 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Page title</title>
-    <link rel="stylesheet" href="./sass/index.scss" />
+    <title>Galleria</title>
+    <link rel="stylesheet" href="./styles.css" />
     <script type="module" src="./index.js"></script>
+    <script
+      src="https://kit.fontawesome.com/7118cf8baf.js"
+      crossorigin="anonymous"
+    ></script>
   </head>
+  <header class="header">
+    <div class="container">
+      <form class="search-form" id="search-form">
+        <i class="fas fa-search"></i>
+        <input
+          type="text"
+          name="searchQuery"
+          class="search-input"
+          autocomplete="off"
+          placeholder="Search images..."
+        />
+        <button class="search-btn" type="submit">Search</button>
+      </form>
+    </div>
+  </header>
   <body>
-    <!-- ❗️❗️❗️ Add partials like so for every page -->
-    <include src="./partials/example.html"></include>
+    <div class="gallery">
+      <!-- Карточки изображений -->
+    </div>
+    <div class="thumb">
+      <button class="load-btn" type="button" class="load-more" hidden>
+        Load more
+      </button>
+    </div>
   </body>
 </html>
