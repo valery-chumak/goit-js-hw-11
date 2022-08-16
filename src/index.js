@@ -28,7 +28,11 @@ async function onFormSubmit(e) {
   e.preventDefault();
   clear();
   refs.loadBtn.setAttribute('hidden', true);
-  query = refs.query.value;
+  query = refs.query.value.trim();
+  if (query == "") {
+    Notiflix.Notify.info(`Please fill in the search form`);
+    return;
+  }
   resetPage();
   const response = await getPhotos(query);
   const result = await insertGalleryContent(response);
