@@ -1,28 +1,20 @@
-import axios from "axios";
 import Notiflix from "notiflix";
 import SimpleLightbox from "simplelightbox";
+import axios from "axios";
 import "simplelightbox/dist/simple-lightbox.min.css";
 
-const refs = {
-  form: document.querySelector('#search-form'),
-  query: document.querySelector('input[name="searchQuery"]'),
-  gallery: document.querySelector('.gallery'),
-  loadBtn: document.querySelector('.load-btn')
-}
-const BASE_URL = "http://pixabay.com/api";
-const API_KEY = "29247796-24b66d41fb94834f451b18c5a";
+import { createGalleryItem } from "./js/createGalleryItem";
+import { refs } from "./js/refs";
+import { lightbox } from "./js/lightBox";
+
+
 let currentPage = 1;
 let query = '';
-let   lightbox = new SimpleLightbox('.gallery__link', {
-        captionsData: 'alt',
-        captionPosition: 'bottom',
-        captionDelay: 250,
-    });
-
+const BASE_URL = "http://pixabay.com/api/";
+const API_KEY = "29247796-24b66d41fb94834f451b18c5a";
 
 refs.form.addEventListener('submit', onFormSubmit);
 refs.loadBtn.addEventListener('click', onLoadBtnClick);
-
 
 async function onFormSubmit(e) {
   e.preventDefault();
@@ -38,6 +30,11 @@ async function onFormSubmit(e) {
   const result = await insertGalleryContent(response);
   const { hits, totalHits } = response;
   if (totalHits != 0) {
+    if (totalHits <= 40) {
+      Notiflix.Notify.success(`Hooray! We found ${totalHits} images.`);
+      refs.loadBtn.setAttribute('hidden',true);
+      return;
+    }
     Notiflix.Notify.success(`Hooray! We found ${totalHits} images.`);
     refs.loadBtn.removeAttribute('hidden');
   }
@@ -60,11 +57,9 @@ window.scrollBy({
     Notiflix.Notify.info("We're sorry, but you've reached the end of search results.");
       }
 }
-
-
 async function getPhotos(query) {
-    try {
-    const response = await axios.get(`${BASE_URL}`,{
+  try { 
+    const response = await axios.get(`${BASE_URL}`, {
         params: {
             key: `${API_KEY}`,
             q: `${query}`,
@@ -84,32 +79,6 @@ async function getPhotos(query) {
       incrementPage();
   }
 }
-function createGalleryItem(item) {
-  return `
-  <div class="photo-card">
-    <a href="${item.largeImageURL}" class="gallery__link link">
-    <img class="gallery__image" src="${item.webformatURL}" alt="${item.tags}" loading="lazy" />
-    </a>
-      <div class="info">
-        <p class="info-item">
-          <b>Likes</b>
-          <span>${item.likes}</span>
-        </p>
-        <p class="info-item">
-          <b>Views</b>
-          <span>${item.views}</span>
-        </p>
-        <p class="info-item">
-          <b>Comments</b>
-          <span>${item.comments}</span>
-        </p>
-        <p class="info-item">
-          <b>Downloads</b>
-          <span>${item.downloads}</span>
-        </p>
-      </div>
-  </div>`
-}
 const createGallery = (array) => array.reduce((acc, item) => acc + createGalleryItem(item), '');
 const insertGalleryContent = async (object) => {
   const { hits, totalHits } = object;
@@ -120,13 +89,12 @@ const insertGalleryContent = async (object) => {
   refs.gallery.insertAdjacentHTML('beforeend', result);
   lightbox.refresh();
 }
-function clear() {
-  refs.gallery.innerHTML = '';
-}
 function incrementPage() {
   currentPage =currentPage +  1;
 }
 function resetPage() {
   currentPage = 1;
 }
-console.log(lightbox);
+function clear() {
+  refs.gallery.innerHTML = '';
+}
